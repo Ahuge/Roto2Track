@@ -52,8 +52,13 @@ class RotoShape(object):
         t.setName(self.name)
         tracks = t["tracks"]
         for index, point in enumerate(self.points):
-            t["add_track"].execute()
+            track_added = False
             for frame in point.frames:
+                if not track_added:
+                    nuke.frame(frame)
+                    t["add_track"].execute()
+                    track_added = True
+
                 val_x, val_y, other = point.valueAt(frame)
                 tracks.setValueAt(val_x, frame, Roto2TrackGlobals.TRACKER_COLUMN_COUNT * index + Roto2TrackGlobals.X_POS)
                 tracks.setValueAt(val_y, frame, Roto2TrackGlobals.TRACKER_COLUMN_COUNT * index + Roto2TrackGlobals.Y_POS)
